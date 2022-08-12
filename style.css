@@ -1,0 +1,22 @@
+.xoicon{
+    width: 100px;
+    height: auto;
+}
+body{
+    display: flex;
+    justify-content: center;
+}
+.board{
+    height: 500px;
+    width: 500px;
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    grid-template-rows: repeat(3, 1fr);
+    
+}
+.cell{
+    border: 1px solid black;
+    display: grid;
+    align-items: center;
+    justify-content: center;
+}
