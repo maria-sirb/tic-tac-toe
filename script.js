@@ -3,6 +3,10 @@ let Player = (name, marker) => {
     return {name, marker};
 }
 
+let Bot = (name, marker) => {
+    return{name, marker};
+}
+
 let Gameboard = (function (){
 
     let _board = [];
@@ -20,6 +24,9 @@ let Gameboard = (function (){
             return true;
         else 
            return false;  
+    }
+    let getBoard = () => {
+        return _board.slice();
     }
     //adds a marker on the specifiend position, then calls the checkWinner function to check if the 
     //newly added marker determined the end of the game
@@ -77,7 +84,18 @@ let Gameboard = (function (){
         
         return winner;
     };
-    return {_board, isValid, isFull, addMarker, checkWinner};
+
+    let refreshBoard = () => {
+
+        _board = [["","",""],["","",""],["","",""]];
+        _cellsOccupied = [];
+        let icons = document.querySelectorAll('.xoicon');
+        icons.forEach(item => {
+             item.remove();
+        });
+
+    }
+    return {getBoard, isValid, isFull, addMarker, checkWinner, refreshBoard};
 
 })();
 
@@ -88,13 +106,20 @@ let GameFlow = (function() {
     let currentPlayer = Player1;
     let winner = null;
 
+   
     let playGame = () =>{
         
         console.log(currentPlayer);
+         Player1 = Player('Player 1', 'x');
+         Player2 = Player('Player 2', 'o');
+        currentPlayer = Player1;
+        winner = null;
+        
         function play () {
              
             
             let cellPos = this.id;
+            console.log(this);
             console.log(cellPos);
             if(Gameboard.isValid(cellPos) && !Gameboard.isFull() && winner == null)
             {
@@ -110,7 +135,7 @@ let GameFlow = (function() {
             console.log("winner:" + winner);
     
         }
-
+    
         let cell = document.querySelectorAll('.cell');
             cell.forEach(item => {
 
@@ -122,6 +147,244 @@ let GameFlow = (function() {
     return winner;
 };
     
+ let playGameBot = () =>{
+
+    console.log(currentPlayer);
+    Player1 = Player('Player 1', 'x');
+    Player2 = Bot('Player 2', 'o');
+    currentPlayer = Player1;
+    winner = null;
+    
+    //checks if there are empty cells on the board
+    function isMoveLeft(board)
+    {
+        for(let i = 0; i < 3; i++)
+        {
+            for(let j = 0; j < 3; j++)
+            {
+                if(board[i][j] == "")
+                   return true;
+            }
+        }
+        return false;
+    }
+
+    //evaluates the board and checks for winners
+    function evaluate(board)
+   {
+     
+    // Checking for Rows for X or O victory.
+    for(let row = 0; row < 3; row++)
+    {
+        if (board[row][0] == board[row][1] &&
+            board[row][1] == board[row][2])
+        {
+            if (board[row][0] == "o")
+                return +10;
+                 
+            else if (board[row][0] == "x")
+                return -10;
+        }
+    }
+  
+    // Checking for Columns for X or O victory.
+    for(let col = 0; col < 3; col++)
+    {
+        if (board[0][col] == board[1][col] &&
+            board[1][col] == board[2][col])
+        {
+            if (board[0][col] == "o")
+                return +10;
+  
+            else if (board[0][col] == "x")
+                return -10;
+        }
+    }
+  
+    // Checking for Diagonals for X or O victory.
+    if (board[0][0] == board[1][1] && board[1][1] == board[2][2])
+    {
+        if (board[0][0] == "o")
+            return +10;
+             
+        else if (board[0][0] == "x")
+            return -10;
+    }
+  
+    if (board[0][2] == board[1][1] &&
+        board[1][1] == board[2][0])
+    {
+        if (board[0][2] == "o")
+            return +10;
+             
+        else if (board[0][2] == "x")
+            return -10;
+    }
+}
+    // This is the minimax function. It
+    // considers all the possible ways
+    // the game can go and returns the
+    // value of the board
+    function minimax(board, depth, isMax)
+    {
+ 
+        let score = evaluate(board);
+        // If Maximizer has won the game
+        // return his/her evaluated score
+        if(score == 10)
+        {
+            return score;
+        }
+        // If Minimizer has won the game
+        // return his/her evaluated score
+        if(score == -10)
+        {
+            return score;
+        }
+
+        // If there are no more moves and
+        // no winner then it is a tie
+        if (isMoveLeft(board) == false)
+        {
+            return 0;
+        }
+        //if it's maximiser's move (the bot)
+        if(isMax)
+        {
+
+            let best = -1000;
+
+            for(let i = 0; i < 3; i++)
+            {
+                for(let j = 0; j < 3; j++)
+                {
+                    if(board[i][j] == "")
+                    {
+                        // Make the move
+                         board[i][j] = "o";
+  
+                        // Call minimax recursively
+                        // and choose the maximum value
+                        //isMax toggles between true and false
+                         best = Math.max(best, minimax(board, depth + 1, !isMax));
+  
+                         // Undo the move
+                         board[i][j] = "";
+                    }
+                }
+            }
+            return best
+        }
+        //if it's minimiser's move (the opponent)
+        else
+        {
+
+            let best = 1000;
+
+            for(let i = 0; i < 3; i++)
+            {
+                for(let j = 0; j < 3; j++)
+                {
+                    if(board[i][j] == "")
+                    {
+                        // Make the move
+                         board[i][j] = "x";
+  
+                        // Call minimax recursively
+                        // and choose the maximum value
+                        //isMax toggles between true and false
+                         best = Math.min(best, minimax(board, depth + 1, !isMax));
+  
+                         // Undo the move
+                         board[i][j] = "";
+                    }
+                }
+            }
+            return best
+        }
+         // Else if none of them have
+        // won then return 0
+        return 0;
+    }
+   
+
+   function findBestMove(board)
+   {
+    let bestVal = -1000;
+    let bestMove = "";
+    // Traverse all cells, evaluate
+    // minimax function for all empty
+    // cells. And return the cell
+    // with optimal value.
+    for(let i = 0; i < 3; i++)
+    {
+        for(let j = 0; j < 3; j++)
+        {
+            if(board[i][j] == "")
+            {
+                board[i][j] = "o";
+                let moveVal = minimax(board, 0, false);
+                board[i][j] = "";
+                // If the value of the current move
+                // is more than the best value, then
+                // update best
+                if (moveVal > bestVal)
+                {
+                    bestMove = `${i}${j}`;
+                    bestVal = moveVal;
+                }
+            }
+           
+        }
+    }
+    return bestMove;
+
+   }
+        function play () {
+             
+            
+            let cellPos = this.id;
+            console.log(this);
+            console.log(cellPos);
+            if(currentPlayer.name == "Player 1" && Gameboard.isValid(cellPos) && !Gameboard.isFull() && winner == null)
+            {
+                currentPlayer = playTurn(cellPos, currentPlayer);
+            }
+            console.log(currentPlayer);
+            if(Gameboard.isFull() || winner != null)
+            {
+                console.log("Game over!!!!");
+                this.removeEventListener('click', play); //if board is full or there is a winner, don't allow
+                //filling cells anymore
+                
+            }
+            if(currentPlayer.name == "Player 2")
+            {
+                let boardCopy = Gameboard.getBoard();
+                console.log(isMoveLeft(boardCopy));
+                let botMove = findBestMove(boardCopy);
+                currentPlayer = playTurn(botMove, currentPlayer);
+            }
+            if(Gameboard.isFull() || winner != null)
+            {
+                console.log("Game over!!!!");
+                this.removeEventListener('click', play); //if board is full or there is a winner, don't allow
+                //filling cells anymore
+                
+            }
+            console.log("winner:" + winner);
+    
+        }
+    
+        let cell = document.querySelectorAll('.cell');
+            cell.forEach(item => {
+
+            item.addEventListener('click', play);
+
+    });
+   
+ }
+
 //plays a single turn: gets the cell postion that was clicked, and the current player
 //and calls the addMarker function, then returns the next player
     let playTurn = (cellPos, currentPlayer) => {
@@ -139,16 +402,38 @@ let GameFlow = (function() {
         console.log(currentPlayer);
         return currentPlayer;
     };
-    return {playGame};
+    return {playGame, playGameBot};
 })();
 
-console.log(Gameboard._board[1][2]);
+//console.log(Gameboard._board[1][2]);
 /*console.log(Gameboard.addMarker("20", 'x'));
 console.log(Gameboard.addMarker("11", 'x'));
 console.log(Gameboard.addMarker("02", 'x'));
 console.log(Gameboard.addMarker("01", 'x'));
 console.log(Gameboard._board[0][1]);*/
 //console.log(Gameboard.checkWinner([0,2]));
-console.log(GameFlow.playGame());
+//console.log(GameFlow.playGame());
+
+function determineGameMode()
+{
+    const playMode = document.querySelector('input[name = "playMode"]:checked').value;
+    if(playMode == "player")
+    {
+        GameFlow.playGame();
+    }
+    else if(playMode == "bot")
+    {
+        GameFlow.playGameBot();
+    }   
+}
+const startBtn = document.querySelector('.start-button');
+startBtn.addEventListener('click', determineGameMode());
+
+const restartBtn = document.querySelector('.restart-button');
+restartBtn.addEventListener('click', () => {
+    Gameboard.refreshBoard();
+    determineGameMode();
+});
+
 
 

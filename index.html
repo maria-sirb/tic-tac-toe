@@ -9,6 +9,16 @@
     <script src = "./script.js" defer></script>
 </head>
 <body>
+    <h1>Tic Tac Toe</h1>
+    <div class = "option">
+        <input type = "radio" id = "player" name = "playMode" value = "player" checked>
+        <label for = "player">Player vs Player</label>
+    </div>
+    <div class = "option">
+        <input type = "radio" id = "bot" name = "playMode" value = "bot">
+        <label for = "bot">Player vs Bot</label>
+    </div>
+    <button class = "start-button" type = "button">Start Game</button>
     <div class = "board">
         <div class = "cell" id = "00"></div>
         <div class = "cell" id = "01"></div>
@@ -20,5 +30,6 @@
         <div class = "cell" id = "21"></div>
         <div class = "cell" id = "22"></div>
     </div>
+    <button class = "restart-button" type = "button">Restart</button>
 </body>
 </html>
