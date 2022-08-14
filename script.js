@@ -109,35 +109,45 @@ let GameFlow = (function() {
    
     let playGame = () =>{
         
-        console.log(currentPlayer);
+        //console.log(currentPlayer);
          Player1 = Player('Player 1', 'x');
          Player2 = Player('Player 2', 'o');
         currentPlayer = Player1;
         winner = null;
         
         function play () {
-             
+
+            if(Gameboard.isFull() || winner != null || currentGameMode != "player")
+            {
+                console.log("Game over!!!!");
+                cells.forEach(cell => {
+
+                    cell.removeEventListener('click', play);
+                 });  //if board is full or there is a winner, don't allow
+                //filling cells anymore
+                
+            }
             
             let cellPos = this.id;
-            console.log(this);
-            console.log(cellPos);
+           // console.log(this);
+           // console.log(cellPos);
             if(Gameboard.isValid(cellPos) && !Gameboard.isFull() && winner == null)
             {
                 currentPlayer = playTurn(cellPos, currentPlayer);
             }
-            if(Gameboard.isFull() || winner != null)
-            {
-                console.log("Game over!!!!");
-                this.removeEventListener('click', play); //if board is full or there is a winner, don't allow
-                //filling cells anymore
-                
-            }
+            if(winner != null)
+                {
+                    let winnerAnnouncement = document.querySelector('.winner-screen');
+                    console.log(winnerAnnouncement);
+                    winnerAnnouncement.querySelector('.winner-text').textContent = `${winner}`;
+                    winnerAnnouncement.classList.replace('winner-screen', 'winner-screen-show');
+                }
             console.log("winner:" + winner);
     
         }
     
-        let cell = document.querySelectorAll('.cell');
-            cell.forEach(item => {
+        let cells = document.querySelectorAll('.cell');
+            cells.forEach(item => {
 
             item.addEventListener('click', play);
 
@@ -146,14 +156,16 @@ let GameFlow = (function() {
             
     return winner;
 };
-    
+   
+//option for playing game against bot
  let playGameBot = () =>{
 
-    console.log(currentPlayer);
+    //console.log(currentPlayer);
     Player1 = Player('Player 1', 'x');
     Player2 = Bot('Player 2', 'o');
     currentPlayer = Player1;
     winner = null;
+    
     
     //checks if there are empty cells on the board
     function isMoveLeft(board)
@@ -342,43 +354,54 @@ let GameFlow = (function() {
    }
         function play () {
              
-            
+            //make sure the gameboard isn'full,
+            //there is no winner yet and
+            //the game mode option hasn't change durring the game
+           if(Gameboard.isFull() || winner != null || currentGameMode != "bot")
+           {
+                console.log("Game over!!!!");
+                cells.forEach(cell => {
+
+                   cell.removeEventListener('click', play);
+                }); //if board is full or there is a winner, don't allow
+               //filling cells anymore
+           
+               
+           }
             let cellPos = this.id;
-            console.log(this);
-            console.log(cellPos);
-            if(currentPlayer.name == "Player 1" && Gameboard.isValid(cellPos) && !Gameboard.isFull() && winner == null)
+          //  console.log(this);
+           // console.log(cellPos);
+            if(currentPlayer.name == "Player 1" && Gameboard.isValid(cellPos) && !Gameboard.isFull() && winner == null && currentGameMode == "bot")
             {
                 currentPlayer = playTurn(cellPos, currentPlayer);
             }
-            console.log(currentPlayer);
-            if(Gameboard.isFull() || winner != null)
-            {
-                console.log("Game over!!!!");
-                this.removeEventListener('click', play); //if board is full or there is a winner, don't allow
-                //filling cells anymore
-                
-            }
+           // console.log(currentPlayer);
+           //check again in case the game ended after the 'x' player's turn
+           if(Gameboard.isFull() || winner != null || currentGameMode != "bot")
+           {
+               console.log("Game over!!!!");
+               cells.forEach(cell => {
+
+                   cell.removeEventListener('click', play);
+                }); //if board is full or there is a winner, don't allow
+               //filling cells anymore
+             
+       
+           }
+           
             if(currentPlayer.name == "Player 2")
             {
                 let boardCopy = Gameboard.getBoard();
-                console.log(isMoveLeft(boardCopy));
+              //  console.log(isMoveLeft(boardCopy));
                 let botMove = findBestMove(boardCopy);
                 currentPlayer = playTurn(botMove, currentPlayer);
             }
-            if(Gameboard.isFull() || winner != null)
-            {
-                console.log("Game over!!!!");
-                this.removeEventListener('click', play); //if board is full or there is a winner, don't allow
-                //filling cells anymore
-                
-            }
+           
             console.log("winner:" + winner);
     
         }
-    
-        let cell = document.querySelectorAll('.cell');
-            cell.forEach(item => {
-
+        let cells = document.querySelectorAll('.cell');
+            cells.forEach(item => {
             item.addEventListener('click', play);
 
     });
@@ -405,14 +428,6 @@ let GameFlow = (function() {
     return {playGame, playGameBot};
 })();
 
-//console.log(Gameboard._board[1][2]);
-/*console.log(Gameboard.addMarker("20", 'x'));
-console.log(Gameboard.addMarker("11", 'x'));
-console.log(Gameboard.addMarker("02", 'x'));
-console.log(Gameboard.addMarker("01", 'x'));
-console.log(Gameboard._board[0][1]);*/
-//console.log(Gameboard.checkWinner([0,2]));
-//console.log(GameFlow.playGame());
 
 function determineGameMode()
 {
@@ -426,8 +441,40 @@ function determineGameMode()
         GameFlow.playGameBot();
     }   
 }
+function playChosenGameMode(playMode)
+{
+    if(playMode == "player")
+    {
+        console.log("playing vs player");
+        timer = setInterval(GameFlow.playGame(), 1000);
+    }
+    else if(playMode == "bot")
+    {
+        console.log("playing vs bot");
+        timer = setInterval(GameFlow.playGameBot(), 1000);
+    }   
+}
+
+const playModeBtns = document.querySelectorAll('input[type = "radio"]');
+let currentGameMode = "bot";
+playModeBtns.forEach(option => {
+    option.addEventListener('click', () => {
+       
+        currentGameMode = option.value;
+        Gameboard.refreshBoard();
+        playChosenGameMode(option.value);
+        console.log(option.value);
+    });
+});
+
 const startBtn = document.querySelector('.start-button');
-startBtn.addEventListener('click', determineGameMode());
+const startMenu = document.querySelector(".start");
+const game = document.querySelector(".game");
+startBtn.addEventListener('click', () =>{
+    startMenu.classList.replace("start", "start-hidden");
+    game.classList.replace("game", "game-show");
+   
+});
 
 const restartBtn = document.querySelector('.restart-button');
 restartBtn.addEventListener('click', () => {
