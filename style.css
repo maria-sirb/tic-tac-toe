@@ -1,6 +1,28 @@
+:root{
+    --xcolor: #8FC23F;
+    --ocolor: #5E79BC;
+    --contrast-color:#1A181B;
+    --highlight-color:#FFCB30;
+    --main-color:#F7EBEC;
+
+}
 .xoicon{
-    width: 100px;
-    height: auto;
+
+    animation: add-icon 0.5s forwards;
+}
+@keyframes add-icon {
+    0%{
+        width: 0px;
+        height: auto;
+    }
+    90%{
+        width: 110px;
+        height: auto;
+    }
+    100%{
+        width: 100px;
+        height: auto;
+    }
 }
 body{
 
@@ -12,6 +34,7 @@ body{
     margin: 0;
     font-family:'Gill Sans', 'Gill Sans MT', 'Trebuchet MS', sans-serif;
     z-index:3;
+    color:var(--contrast-color);
 }
 .start{
  
@@ -35,10 +58,6 @@ body{
         margin-top: 200px;
     }
     100%{
-        /*display: flex;
-        flex-direction: column;
-        justify-content: center;
-        align-items: center;*/
         
     }
 }
@@ -97,46 +116,104 @@ body{
            
     }
 }
-.winner-screen{
+.winner-screen-first{
     visibility:hidden;
     max-height: 0;
 }
-.winner-backgorund{
+.winner-background{
 
     height: 100vh;
     width:100vw;
     margin:0;
-    background-color: rgba(1, 20, 15, 0.8);
+    background-color: var(--contrast-color);
+    position: fixed;
+    z-index:3;
    
+}
+.text-wrapper{
+    position: fixed;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 100vh;
+    width:100vw;
+    z-index:5;
+
 }
 .winner-text{
 
-    font-size: 2rem;
-    color: white;
-
+    font-size: 4rem;
+    color: var(--main-color); 
+    /*z-index: 5;
+    left:25%;
+    top:40%;*/
+   
 }
 .winner-screen-show{
 
-    animation: show-winner 3s forwards; 
+    animation: show-winner 2s forwards; 
 }
 @keyframes show-winner{
 
     0%{
         opacity: 0;
         visibility: hidden;
+        max-width:0;
+        max-height:0;
     }
+    60%{
+        opacity: 0;
+        visibility: visible;
+    }
+
     100%{
         opacity: 1;
         visibility: visible;
-        height: 100%;
+        min-height: 100%;
         width: 100%;
         z-index:5;
         position:fixed;
+        top:0;
+        bottom: 0;
+        left:0;
+        right:0;
+    }
+
+}
+.winner-screen-hide{
+
+    animation: hide-winner 2s forwards; 
+}
+@keyframes hide-winner{
+
+    0%{
+        opacity: 1;
+        visibility: visible;
+        min-height: 100%;
+        width: 100%;
+        z-index:5;
+        position:fixed;
+        top:0;
+        bottom: 0;
+        left:0;
+        right:0;
+    }
+    40%{
+        opacity: 0;
+        visibility: visible;
+    }
+    100%{
+        opacity: 0;
+        visibility: hidden;
+        max-width:0%;
+        max-height:0;
     }
 
 }
 button{
     font-family:inherit;
+    
 }
 .start-button{
 

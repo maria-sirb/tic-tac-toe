@@ -95,7 +95,31 @@ let Gameboard = (function (){
         });
 
     }
-    return {getBoard, isValid, isFull, addMarker, checkWinner, refreshBoard};
+
+    let announceWinner = (winner) =>{
+
+        let winnerAnnouncement = document.querySelector('.winner-screen');
+            console.log(winnerAnnouncement);
+            winnerAnnouncement.classList.replace('winner-screen-first', 'winner-screen-show');
+            winnerAnnouncement.classList.replace('winner-screen-hide', 'winner-screen-show');
+        if(winner != null)
+        {
+            
+            winnerAnnouncement.querySelector('.winner-text').textContent = `The winner is player ${winner}!`;
+           
+        }
+        else{
+
+            winnerAnnouncement.querySelector('.winner-text').textContent = `It's a draw!`;
+        }
+
+        let playAgainBtn = winnerAnnouncement.querySelector(".restart-button");
+        playAgainBtn.addEventListener('click', () => {
+
+            winnerAnnouncement.classList.replace('winner-screen-show', 'winner-screen-hide');
+        });
+    }
+    return {getBoard, isValid, isFull, addMarker, checkWinner, refreshBoard, announceWinner};
 
 })();
 
@@ -135,12 +159,9 @@ let GameFlow = (function() {
             {
                 currentPlayer = playTurn(cellPos, currentPlayer);
             }
-            if(winner != null)
+            if(Gameboard.isFull() || winner != null )
                 {
-                    let winnerAnnouncement = document.querySelector('.winner-screen');
-                    console.log(winnerAnnouncement);
-                    winnerAnnouncement.querySelector('.winner-text').textContent = `${winner}`;
-                    winnerAnnouncement.classList.replace('winner-screen', 'winner-screen-show');
+                   Gameboard.announceWinner(winner);
                 }
             console.log("winner:" + winner);
     
@@ -366,7 +387,6 @@ let GameFlow = (function() {
                 }); //if board is full or there is a winner, don't allow
                //filling cells anymore
            
-               
            }
             let cellPos = this.id;
           //  console.log(this);
@@ -375,6 +395,10 @@ let GameFlow = (function() {
             {
                 currentPlayer = playTurn(cellPos, currentPlayer);
             }
+            if(Gameboard.isFull() || winner != null )
+           {
+              Gameboard.announceWinner(winner);
+           }
            // console.log(currentPlayer);
            //check again in case the game ended after the 'x' player's turn
            if(Gameboard.isFull() || winner != null || currentGameMode != "bot")
@@ -385,10 +409,8 @@ let GameFlow = (function() {
                    cell.removeEventListener('click', play);
                 }); //if board is full or there is a winner, don't allow
                //filling cells anymore
-             
        
            }
-           
             if(currentPlayer.name == "Player 2")
             {
                 let boardCopy = Gameboard.getBoard();
@@ -396,6 +418,10 @@ let GameFlow = (function() {
                 let botMove = findBestMove(boardCopy);
                 currentPlayer = playTurn(botMove, currentPlayer);
             }
+            if(Gameboard.isFull() || winner != null )
+           {
+              Gameboard.announceWinner(winner);
+           }
            
             console.log("winner:" + winner);
     
