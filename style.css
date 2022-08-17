@@ -328,14 +328,12 @@ input[type = "radio"]{
         width:300px;
     }
     
-    .restart-button,
+.restart-button,
 .option{
 
     width: 130px;
 }
-.play-again-button{
-    width: 160px;
-}
+
 .xoicon{
 
     animation: add-icon 0.5s forwards;
