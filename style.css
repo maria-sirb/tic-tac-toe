@@ -140,7 +140,7 @@ body{
         visibility: visible;
          height: 100%;
          opacity: 1;
-         margin-top: -150px;
+         margin-top: -200px;
            
     }
 }
@@ -317,4 +317,55 @@ input[type = "radio"]{
     color:var(--ocolor);
     border-color:var(--ocolor);
     transition: all 0.5s ease-in;
+}
+@media (max-width: 500px)
+{
+
+    .board{
+
+        height: 300px;
+        width:300px;
+    }
+    
+    .restart-button,
+.play-again-button,
+.option{
+
+    width: 130px;
+}
+.xoicon{
+
+    animation: add-icon 0.5s forwards;
+}
+@keyframes add-icon {
+    0%{
+        width: 0px;
+        height: auto;
+    }
+    90%{
+        width: 80px;
+        height: auto;
+    }
+    100%{
+        width: 70px;
+        height: auto;
+    }
+}
+.game-show{
+ 
+    display: flex;
+    flex-direction:column;
+    justify-content: flex-start;
+    gap: 50px;
+    align-content:center;
+}
+.start,
+.start-hidden{
+    font-size: 1.5rem;
+}
+.winner-text{
+    font-size: 3rem;
+    padding: 20px;
+}
+
 }
