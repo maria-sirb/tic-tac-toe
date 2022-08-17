@@ -293,6 +293,7 @@ input[type = "radio"]{
   overflow: hidden;
   max-height: 0;
   position: fixed;
+  opacity:0;
 
 }
 .cell{
@@ -328,10 +329,12 @@ input[type = "radio"]{
     }
     
     .restart-button,
-.play-again-button,
 .option{
 
     width: 130px;
+}
+.play-again-button{
+    width: 160px;
 }
 .xoicon{
 
