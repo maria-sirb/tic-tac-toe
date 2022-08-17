@@ -1,9 +1,9 @@
 :root{
-    --xcolor: #8FC23F;
-    --ocolor: #5E79BC;
-    --contrast-color:#1A181B;
-    --highlight-color:#FFCB30;
-    --main-color:#F7EBEC;
+    --xcolor: #b4e663;
+    --ocolor: #596fa8;
+    --contrast-color:#151416;
+    --highlight-color:#f8cf53;
+    --main-color:#ebdbdc;
 
 }
 .xoicon{
@@ -34,7 +34,8 @@ body{
     margin: 0;
     font-family:'Gill Sans', 'Gill Sans MT', 'Trebuchet MS', sans-serif;
     z-index:3;
-    color:var(--contrast-color);
+    color:var(--main-color);
+    background-color: var(--contrast-color);
 }
 .start{
  
@@ -43,8 +44,9 @@ body{
     justify-content: center;
     align-items: center;
     
-    font-size: 2rem;
+    font-size: 3rem;
     animation: start-show 0.5s forwards;
+    
 }
 @keyframes start-show {
     0%{
@@ -63,11 +65,12 @@ body{
 }
 .start-hidden{
     /*transition: translateX(-100px) 3s ease-in;*/
+    
     display: flex;
-        flex-direction: column;
-        justify-content: center;
-        align-items: center;
-        font-size: 2rem;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    font-size: 3rem;
     animation: hide-start 2s forwards;
 }
 @keyframes hide-start {
@@ -83,6 +86,31 @@ body{
         overflow: hidden;
     }
 }
+.start>h1,
+.start-hidden
+{
+    color: var(--ocolor);
+    -webkit-text-stroke: 3px var(--ocolor);
+    text-shadow:6px 6px 0 var(--xcolor);
+}
+.start-button,
+.start-hidden>.start-button{
+
+    transition: all 0.5s ease-in; 
+    background-color: var(--contrast-color);
+    color: var(--xcolor);
+    outline: none;
+    border: 2px solid var(--xcolor);
+    width: 8rem;
+    font-size: 1.5rem;
+    border-radius: 10px;
+}
+.start-button:hover{
+    color: var(--highlight-color);
+    border-color: var(--highlight-color);
+    transition: all 0.5s ease-in;
+}
+
 .game{
     visibility: hidden;
     position: fixed;
@@ -125,7 +153,7 @@ body{
     height: 100vh;
     width:100vw;
     margin:0;
-    background-color: var(--contrast-color);
+    background-color:rgb(21, 20, 22, 0.9);
     position: fixed;
     z-index:3;
    
@@ -144,7 +172,7 @@ body{
 .winner-text{
 
     font-size: 4rem;
-    color: var(--main-color); 
+    color: var(--highlight-color); 
     /*z-index: 5;
     left:25%;
     top:40%;*/
@@ -212,20 +240,16 @@ body{
 
 }
 button{
-    font-family:inherit;
-    
+    font-family:inherit;  
 }
-.start-button{
 
-    width: 8rem;
-    font-size: 1.5rem;
-}
 .board{
     height: 480px;
     width: 480px;
     display: grid;
     grid-template-columns: repeat(3, 1fr);
     grid-template-rows: repeat(3, 1fr);
+    border: 1px solid var(--contrast-color);
     
 }
 .game-options{
@@ -235,18 +259,33 @@ button{
     width: 100%;
 }
 .option{
-    border: 1px solid black;
+    transition: all 0.5s ease-in;
+    border: 3px solid var(--highlight-color);
+    color: var(--highlight-color);
     padding: 5px;
     width: 200px;
     text-align:center;
+    border-radius: 10px;
 }
+.active-option{
 
+    background-color: var(--highlight-color);
+    color:var(--ocolor);
+    border-color:var(--ocolor);
+    transition: all 0.5s ease-in;
+}
 label,
-.restart-button{
+.restart-button,
+.play-again-button{
     font-size: 1.5rem;
     height: 3rem;
     padding: 3px;
+    font-weight: bold;
    
+}
+label,
+button{
+    cursor:pointer;
 }
 input[type = "radio"]{
     -webkit-appearance: none;
@@ -257,11 +296,25 @@ input[type = "radio"]{
 
 }
 .cell{
-    border: 1px solid black;
+    border: 3px solid var(--contrast-color);
     display: grid;
     align-items: center;
     justify-content: center;
+    background-color: var(--main-color);
 }
-.restart-button{
+.restart-button,
+.play-again-button{
     width: 200px;
+    background-color: var(--contrast-color);
+    color:var(--xcolor);
+    border-radius: 10px;
+    border: 3px solid var(--xcolor);
+    transition: all 0.5s ease-in;
+}
+.restart-button:hover,
+.play-again-button:hover{
+    background-color: var(--xcolor);
+    color:var(--ocolor);
+    border-color:var(--ocolor);
+    transition: all 0.5s ease-in;
 }

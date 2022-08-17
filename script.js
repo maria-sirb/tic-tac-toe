@@ -113,10 +113,12 @@ let Gameboard = (function (){
             winnerAnnouncement.querySelector('.winner-text').textContent = `It's a draw!`;
         }
 
-        let playAgainBtn = winnerAnnouncement.querySelector(".restart-button");
+        let playAgainBtn = winnerAnnouncement.querySelector(".play-again-button");
         playAgainBtn.addEventListener('click', () => {
 
             winnerAnnouncement.classList.replace('winner-screen-show', 'winner-screen-hide');
+            Gameboard.refreshBoard();
+            determineGameMode();
         });
     }
     return {getBoard, isValid, isFull, addMarker, checkWinner, refreshBoard, announceWinner};
@@ -153,8 +155,7 @@ let GameFlow = (function() {
             }
             
             let cellPos = this.id;
-           // console.log(this);
-           // console.log(cellPos);
+    
             if(Gameboard.isValid(cellPos) && !Gameboard.isFull() && winner == null)
             {
                 currentPlayer = playTurn(cellPos, currentPlayer);
@@ -418,6 +419,16 @@ let GameFlow = (function() {
                 let botMove = findBestMove(boardCopy);
                 currentPlayer = playTurn(botMove, currentPlayer);
             }
+            if(Gameboard.isFull() || winner != null || currentGameMode != "bot")
+           {
+                console.log("Game over!!!!");
+                cells.forEach(cell => {
+
+                   cell.removeEventListener('click', play);
+                }); //if board is full or there is a winner, don't allow
+               //filling cells anymore
+           
+           }
             if(Gameboard.isFull() || winner != null )
            {
               Gameboard.announceWinner(winner);
@@ -486,6 +497,17 @@ let currentGameMode = "bot";
 playModeBtns.forEach(option => {
     option.addEventListener('click', () => {
        
+        let optionWrapper = option.parentElement;
+        let otherOptionWrapper;
+        if(option.value == 'player')
+           otherOptionWrapper = document.querySelector('.bot');
+        else {
+            otherOptionWrapper = document.querySelector('.player');
+        }   
+       console.log(otherOptionWrapper);
+        optionWrapper.classList.add('active-option');
+        otherOptionWrapper.classList.remove('active-option');
+        
         currentGameMode = option.value;
         Gameboard.refreshBoard();
         playChosenGameMode(option.value);
@@ -503,6 +525,7 @@ startBtn.addEventListener('click', () =>{
 });
 
 const restartBtn = document.querySelector('.restart-button');
+
 restartBtn.addEventListener('click', () => {
     Gameboard.refreshBoard();
     determineGameMode();
